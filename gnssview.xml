@@ -1,0 +1,66 @@
+<gnssview>
+
+	<!-- A comma-separated list of the constellations to be tracked -->
+	<!-- Beidou,GPS,GLONASS,Galileo,QZSS,SBAS -->
+	<!-- The signal bars for each constellation will be drawn in the order in this list -->
+	<constellations>GPS,GLONASS,Beidou</constellations>
+	
+	<receiver>Septentrio PolaRx4</receiver>
+	
+	<location>
+		<!-- latitude in decimal degrees (0-90), +ve means North, -ve means South -->
+		 <latitude>-33.87</latitude> 
+		<!-- longitude in decimal degrees (0-180), +ve means East, -ve means West -->
+		 <longitude>151.21</longitude> 
+	
+	</location>
+	
+	<network>
+		<!--multicast listen address -->
+		<address>226.1.1.37</address>
+		<!-- and the port -->
+		<port>14544</port>
+	</network>
+	
+	<images>
+		<!-- image file to use for the foreground -->
+		<foreground>
+			<file>foreground.tif</file>
+			<!-- minelevation is the bottom of the screen/image -->
+			<minelevation>-10</minelevation>
+			<!-- and maxelevation is the top of the image -->
+			<maxelevation>25</maxelevation>
+		</foreground>
+		<!-- the night sky is assumed to cover 0 to 90 degrees -->
+		<nightsky>nightsky.png</nightsky>
+		
+	</images>
+	
+	<animation>
+		<!-- frames per second -->
+		<fps>20</fps>
+		<!-- rotational period (in seconds) -->
+		<period>30</period>
+		<!-- time between recomputations of the sky (in seconds) -->
+		<skyupdate>60</skyupdate>
+		<!-- smooth satellite tracks - the data available from the receiver may be quite coarse so the tracks have the -->
+		<!-- jaggies. This enables a 3-point running average (yes/no) -->
+		<smooth>yes</smooth>
+		<!-- maximum value of the signal-to-noise. Used to scale the displayed value -->
+		<snmax>255</snmax>
+	</animation>
+	
+	<power>
+		<!-- Conserve power by switching off at specified times  (yes/no) -->
+		<conserve>no</conserve>
+		<!-- Turn off completely on the weekend (yes/no) -->
+		<weekends>yes</weekends>
+		<!-- power on time, specified in the format HH:MM:SS (24 hour clock, leading zeroes required)-->
+		<on>07:30:00</on>
+		<!-- power off time, specified in the format HH:MM:SS (24 hour clock, leading zeroes required)-->
+		<off>17:30:00</off>
+		<!-- number of minutes that a keypress or mouse event etc will override power saving -->
+		<overridetime>60</overridetime>
+	</power>
+		
+</gnssview>
