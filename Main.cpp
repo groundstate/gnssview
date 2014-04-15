@@ -23,18 +23,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <QApplication>
 #include <QtDebug>
 
+#include "GNSSViewApp.h"
 #include "GNSSView.h"
+
+GNSSViewApp *app;
 
 int main(int argc, char *argv[])
 {
  
-	QApplication app(argc, argv);
-	QStringList args = app.arguments(); 
+	GNSSViewApp a(argc, argv);
+	QStringList args = a.arguments(); 
 	GNSSView disp(args);
 	disp.show();
-	return app.exec();
+	return a.exec();
 	
 }

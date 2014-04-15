@@ -27,12 +27,15 @@
 #include <cmath>
 #include <iostream>
 
+#include <GL/glu.h> 
+
 #include <QDebug>
 #include <QTimer>
 #include <Qt/QtXml>
 
 #include "GLText.h"
 #include "GNSSSV.h"
+#include "GNSSViewApp.h"
 #include "GNSSViewWidget.h"
 #include "Sun.h"
 #include "SkyModel.h"
@@ -92,7 +95,6 @@ ConstellationProperties::ConstellationProperties(int c)
 
 GNSSViewWidget::GNSSViewWidget(QWidget *parent,QList<GNSSSV *> *b):QGLWidget(parent)
 {
-	
 	gridOn=true;
 	animatedSky=true;
 	showForeground=true;
@@ -253,8 +255,9 @@ void GNSSViewWidget::initializeGL()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, glim.width(), glim.height(), 0,
       GL_RGBA, GL_UNSIGNED_BYTE, glim.bits());
-			
-	QImage sim("gpssat.png");
+	
+	QString r = app->locateResource("gpssat.png");
+	QImage sim(r);
 	glim = convertToGLFormat(sim);
 	satWidth =glim.width();;
 	satHeight=glim.height();
@@ -267,7 +270,8 @@ void GNSSViewWidget::initializeGL()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, glim.width(), glim.height(), 0,
       GL_RGBA, GL_UNSIGNED_BYTE, glim.bits());
 	
-	QImage sun("sun.png");
+	r = app->locateResource("sun.png");
+	QImage sun(r);
 	glim = convertToGLFormat(sun);
 	sunWidth =glim.width();;
 	sunHeight=glim.height();

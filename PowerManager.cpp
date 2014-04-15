@@ -48,20 +48,17 @@ PowerManager::PowerManager(QTime &on,QTime &off):
 	
 	// Raspberry Pi
 	QFileInfo vc = QFileInfo("/opt/vc/bin/tvservice");
-	videoTool = VideoBIOS;
-	if (vc.exists())
-	{
+	videoTool = Unknown;
+	if (vc.exists()){
 		videoTool=RaspberryPi;
 	}
 	else // Conventional Video BIOS
 	{	
-		vc.setFile("/usr/sbin/vbetool");
-		if (vc.exists())
-		{
+		vc.setFile("/usr/sbin/vetool");
+		if (vc.exists()){
 			videoTool=VideoBIOS;
 		}
 	}
-	
 	disableOSPowerManagment();
 	
 }
@@ -172,6 +169,10 @@ void PowerManager::deviceEvent()
 
 void PowerManager::disableOSPowerManagment()
 {
+	qDebug() << "disableOSPowerManagment()";
+	
+	if (videoTool==Unknown) return;
+	
 	QProcess pwr;
 	
 	// jiggery pokery with the screensaver is required too
@@ -188,7 +189,10 @@ void PowerManager::disableOSPowerManagment()
 
 void PowerManager::displayOn()
 {
-	qDebug() << "power on";
+	qDebug() << "displayOn()";
+	
+	if (videoTool==Unknown) return;
+
 	QProcess pwr;
 	switch (videoTool)
 	{
@@ -209,6 +213,8 @@ void PowerManager::displayOn()
 			pwr.waitForFinished();
 			//pwr.start("xset dpms force on; xset s reset; xset s off");
 			break;
+		case Unknown:
+			break;
 	}
 	
 }
@@ -219,6 +225,10 @@ void PowerManager::displayOn()
 
 void PowerManager::displayOff()
 {
+	qDebug() << "displayOff()";
+	
+	if (videoTool==Unknown) return;
+	
 	qDebug() << "power off";
 	QProcess pwr;
 	switch (videoTool)
@@ -229,6 +239,9 @@ void PowerManager::displayOff()
 		case VideoBIOS:
 			pwr.start("sudo /usr/sbin/vbetool dpms off");
 			//pwr.start("xset dpms force off;xset dpms force off");
+			break;
+		case Unknown:
+			return;
 			break;
 	}
 	qDebug() << "starting" << QDateTime::currentDateTime().time().toString();

@@ -69,7 +69,7 @@ class GNSSView : public QWidget
 		void readPendingDatagrams();
 		
 	private:
-  
+  	
 		void readConfig(QString s);
 		void createActions();
 		

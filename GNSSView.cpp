@@ -41,10 +41,11 @@
 #include <arpa/inet.h>
 
 #include "GNSSView.h"
+#include "GNSSViewApp.h"
 #include "GNSSViewWidget.h"
 #include "PowerManager.h"
 
-#define VERSION_INFO  "v1.0"
+#define VERSION_INFO  "v1.0.2"
 #define TRACKING_TIMEOUT 120
 
 GNSSView::GNSSView(QStringList & args)
@@ -128,46 +129,7 @@ GNSSView::GNSSView(QStringList & args)
 	view = new GNSSViewWidget(NULL,&birds);
 	vb->addWidget(view);
 	
-	// Look for a configuration file
-	// The search path is ./:~/gnssview:~/.gnssview:/usr/local/etc:/etc
-	
-	QFileInfo fi;
-	QString config;
-	QString s("./gnssview.xml");
-	fi.setFile(s);
-	if (fi.isReadable())
-		config=s;
-	
-	if (config.isNull()){
-		char *eptr = getenv("HOME");
-		QString home("./");
-		if (eptr)
-			home=eptr;
-		s=home+"/gnssview/gnssview.xml";
-		fi.setFile(s);
-		if (fi.isReadable())
-			config=s;
-		if (config.isNull()){
-			s=home+"/.gnssview/gnssview.xml";
-			fi.setFile(s);
-			if (fi.isReadable())
-				config=s;
-		}
-	}
-	
-	if (config.isNull()){
-		s="/usr/local/etc/gnssview.xml";
-		fi.setFile(s);
-		if (fi.isReadable())
-			config=s;
-	}
-	
-	if (config.isNull()){
-		s="/etc/gnssview.xml";
-		fi.setFile(s);
-		if (fi.isReadable())
-			config=s;
-	}
+	QString config = app->locateResource("gnssview.xml");
 	
 	if (!config.isNull())
 		readConfig(config);

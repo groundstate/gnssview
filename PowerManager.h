@@ -34,7 +34,7 @@ class PowerManager
 	public:
 
 		enum Policy {NightTime=0x01,Weekends=0x02};
-		enum VideoTool  {RaspberryPi,VideoBIOS};
+		enum VideoTool  {RaspberryPi,VideoBIOS,Unknown};
 		enum PowerState {PowerSaveActive=0x01,PowerSaveInactive=0x02,PowerSaveOverridden=0x04};
 		
 		PowerManager(QTime &,QTime &);

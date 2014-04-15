@@ -1,6 +1,7 @@
 HEADERS       = GLText.h \
 								GNSSView.h \
 								GNSSViewWidget.h \
+								GNSSViewApp.h \
 								GNSSSV.h \
 								Sun.h \
 								Colour.h \
@@ -9,6 +10,7 @@ HEADERS       = GLText.h \
 SOURCES       = GLText.cpp \
 								GNSSView.cpp \
 								GNSSViewWidget.cpp \
+								GNSSViewApp.cpp \
 								GNSSSV.cpp \
 								Sun.cpp \
 								Colour.cpp \
@@ -16,4 +18,6 @@ SOURCES       = GLText.cpp \
 								SkyModel.cpp \
                 Main.cpp
 QT           += network opengl xml
-CONFIG       += debug 
+CONFIG       += 
+DEFINES      += QT_NO_DEBUG_OUTPUT
+LIBS	       += -lGLU
