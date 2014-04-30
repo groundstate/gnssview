@@ -54,7 +54,7 @@ PowerManager::PowerManager(QTime &on,QTime &off):
 	}
 	else // Conventional Video BIOS
 	{	
-		vc.setFile("/usr/sbin/vetool");
+		vc.setFile("/usr/sbin/vbetool");
 		if (vc.exists()){
 			videoTool=VideoBIOS;
 		}
