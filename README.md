@@ -32,17 +32,14 @@ Power management
 
 The `tvservice` tool is used on the Raspberry Pi. This has worked fine for me on an LCD monitor. The display and the backlight go off.
 
-On other Linuxen+x386, YMMV. I tried `dpms` and `vbetool` but there were problems. With `xset`, the backlight would go off briefly and then come back on. With `vbetool`, there were occasional freezes of up to 30s before the monitor turned off. Unfortunately there is no standard way of controlling the monitor in Linux so power management may not work for you.
+On other Linuxen+x386, YMMV. With `xset`, the backlight would go off briefly and then come back on my Ubuntu 8.04 system. However, after an update to 12.04 it worked fine.  I also tried `vbetool`, there were occasional freezes of up to 30s before the monitor turned off on one box and segfaults on another box. Unfortunately there is no standard way of controlling the monitor in Linux so you may need to tinker with the code.
 
-On Debian systems, `vbetool` needs to run via `sudo` so to disable the password for just `vbetool` you need to edit /etc/sudoers:
 
-	user_name ALL=(ALL) NOPASSWD: /usr/sbin/vbetool
-	
 Configuration file
 ------------------
 
 `gnssview` uses a configuration file `gnssview.xml`. The comments in the sample file should be enough to get you going.
-The search path for this is `./:~/gnssview:~/.gnssview:/usr/local/etc:/etc`
+The search path for this is `./:~/gnssview:~/.gnssview:/usr/local/share/gnssview:/usr/share/gnssview`
 All other paths are explicit.
 
 Known bugs/quirks
