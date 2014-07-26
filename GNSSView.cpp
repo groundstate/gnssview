@@ -113,6 +113,12 @@ GNSSView::GNSSView(QStringList & args)
 	if (fullScreen)
 		setWindowState(windowState() ^ Qt::WindowFullScreen);
 	
+	setMouseTracking(true); // so that mouse movements wake up the display
+	QCursor curs;
+	curs.setShape(Qt::BlankCursor);
+	setCursor(curs);
+	cursor().setPos(0,0);
+	
 	QTime on(7,0,0);
 	QTime off(19,0,0);
 	
@@ -124,6 +130,7 @@ GNSSView::GNSSView(QStringList & args)
 	address="";
 	port=-1;
 	
+	// Note: readConfig needs 'view'
 	QVBoxLayout * vb = new QVBoxLayout(this);
 	vb->setContentsMargins(0,0,0,0);
 	view = new GNSSViewWidget(NULL,&birds);

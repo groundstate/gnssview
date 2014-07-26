@@ -31,7 +31,7 @@
 class GNSSViewApp:public QApplication
 {
 	public:
-		GNSSViewApp(int argc,char *argv[]);
+		GNSSViewApp(int &argc,char **argv);
 		QString locateResource(QString);
 };
 

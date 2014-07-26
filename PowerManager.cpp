@@ -54,9 +54,9 @@ PowerManager::PowerManager(QTime &on,QTime &off):
 	}
 	else // Conventional Video BIOS
 	{	
-		vc.setFile("/usr/sbin/vbetool");
+		vc.setFile("/usr/bin/xset");
 		if (vc.exists()){
-			videoTool=VideoBIOS;
+			videoTool=XSet;
 		}
 	}
 	disableOSPowerManagment();
@@ -75,7 +75,7 @@ void PowerManager::update()
 	
 	// Turn off on weekends
 	// Turn off between configured times
-	bool powerOn;
+	bool powerOn=true;
 	
 	if (policy & NightTime)
 		powerOn = (now.time() > on) && (now.time() < off); // simple logic here - only works when on < off in 24 hr clock 
@@ -185,6 +185,7 @@ void PowerManager::disableOSPowerManagment()
 	pwr.start("xset", QStringList() << "s" << "off");
 	pwr.waitForStarted();
 	pwr.waitForFinished();
+	
 }
 
 void PowerManager::displayOn()
@@ -207,11 +208,11 @@ void PowerManager::displayOn()
 			pwr.waitForStarted();
 			pwr.waitForFinished();
 			break;
-		case VideoBIOS:
-			pwr.start("sudo /usr/sbin/vbetool dpms on");
+		case XSet:
+			pwr.start("xset dpms force on");
 			pwr.waitForStarted();
 			pwr.waitForFinished();
-			//pwr.start("xset dpms force on; xset s reset; xset s off");
+			disableOSPowerManagment();
 			break;
 		case Unknown:
 			break;
@@ -236,9 +237,8 @@ void PowerManager::displayOff()
 		case RaspberryPi:
 			pwr.start("/opt/vc/bin/tvservice -o");
 			break;
-		case VideoBIOS:
-			pwr.start("sudo /usr/sbin/vbetool dpms off");
-			//pwr.start("xset dpms force off;xset dpms force off");
+		case XSet:
+			pwr.start("xset dpms force off");
 			break;
 		case Unknown:
 			return;

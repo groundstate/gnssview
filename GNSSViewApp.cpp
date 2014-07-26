@@ -24,12 +24,15 @@
 // THE SOFTWARE.
 
 #include <stdlib.h>
+
+#include <QDebug>
 #include <QFileInfo>
+#include <QStringList>
 
 #include "GNSSViewApp.h"
 
 
-GNSSViewApp::GNSSViewApp(int argc,char *argv[]):QApplication(argc,argv){
+GNSSViewApp::GNSSViewApp(int &argc,char **argv):QApplication(argc,argv){
 	app = this;
 }
 

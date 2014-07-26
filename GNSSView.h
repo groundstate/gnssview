@@ -73,6 +73,7 @@ class GNSSView : public QWidget
 		void readConfig(QString s);
 		void createActions();
 		
+		QString configFile;
 		bool fullScreen;
 
 		GNSSViewWidget *view;
