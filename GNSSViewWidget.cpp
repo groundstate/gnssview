@@ -31,7 +31,7 @@
 
 #include <QDebug>
 #include <QTimer>
-#include <Qt/QtXml>
+#include <QtXml>
 
 #include "GLText.h"
 #include "GNSSSV.h"

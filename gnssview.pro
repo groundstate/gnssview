@@ -17,7 +17,9 @@ SOURCES       = GLText.cpp \
 								PowerManager.cpp \
 								SkyModel.cpp \
                 Main.cpp
-QT           += network opengl xml
+QT           += core gui network opengl xml
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 CONFIG       += 
-DEFINES      += QT_NO_DEBUG_OUTPUT
+# DEFINES      += QT_NO_DEBUG_OUTPUT
 LIBS	       += -lGLU

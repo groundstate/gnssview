@@ -29,10 +29,14 @@
 #include <iostream>
 
 #include <QtGui>
-#include <Qt/QtNetwork>
-#include <Qt/QtXml>
+#include <QtNetwork>
+#include <QtXml>
+#include <QAction>
+#include <QInputDialog>
+#include <QMenu>
 #include <QRegExp>
 #include <QUdpSocket>
+#include <QVBoxLayout>
 
 #include <sys/types.h> // flimflummery
 #include <sys/socket.h>
@@ -245,7 +249,7 @@ void GNSSView::offsetTime()
 
 void GNSSView::quit()
 {
-	exit(1);
+	close();
 }
 
 void GNSSView::readConfig(QString s)
