@@ -30,9 +30,8 @@ Azimuth and elevation must be in decimal degrees. The signal level can be whatev
 Power management
 ----------------
 
-The `tvservice` tool is used on the Raspberry Pi. This has worked fine for me on an LCD monitor. The display and the backlight go off.
 
-On other Linuxen+x386, YMMV. With `xset`, the backlight would go off briefly and then come back on my Ubuntu 8.04 system. However, after an update to 12.04 it worked fine.  I also tried `vbetool`, there were occasional freezes of up to 30s before the monitor turned off on one box and segfaults on another box. Unfortunately there is no standard way of controlling the monitor in Linux so you may need to tinker with the code.
+On Linuxen+x386, YMMV. With `xset`, the backlight would go off briefly and then come back on my Ubuntu 8.04 system. However, after an update to 12.04 it worked fine.  I also tried `vbetool`, there were occasional freezes of up to 30s before the monitor turned off on one box and segfaults on another box. Unfortunately there is no standard way of controlling the monitor in Linux so you may need to tinker with the code.
 
 
 Configuration file
