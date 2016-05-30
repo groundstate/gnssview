@@ -1,30 +1,14 @@
 #!/usr/bin/perl -w
 
-#
-# The MIT License (MIT)
-#
-# Copyright (c) 2016 Michael J. Wouters
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# Simulates GNSS satellite systems using SBFfiles as input
+# NB libio-socket-multicast-perl needed in Ubuntu
+use Time::HiRes qw(usleep);
+use IO::Socket::Multicast;
 
 
-# Script for testing parsing of SBF scripts
+use constant DESTINATION => '226.1.1.37:14544'; 
+my $sock = IO::Socket::Multicast->new(Proto=>'udp',PeerAddr=>DESTINATION);
+$sock->mcast_ttl(10); # time to live
 
 $fin = $ARGV[0];
 open(my $FILE, $fin) or die $!;
@@ -43,6 +27,7 @@ $GLONASS=3;
 $QZSS=4;
 $SBAS=5;
 
+$msgcnt=9;
 while (read($FILE, my $buf, BLK_SIZE)) {
    
 	# add what we got to the current $input, so that we can parse for funs stuff
@@ -71,8 +56,17 @@ while (read($FILE, my $buf, BLK_SIZE)) {
 			}
 			
 			if ($gotCN && $gotVis){
-				SendData();
+# 				$msgcnt++;
+# 				if ($msgcnt==10){
+# 					BroadcastData();
+# 					$msgcnt=0;
+# 				}
+# 				else{
+# 					%GNSS=();
+# 				}
+				BroadcastData();
 				$gotCN=$gotVis=0;
+				sleep(1);
 			}
 			
 			# Tidy up the input buffer
@@ -97,7 +91,6 @@ sub ParseMeasEpoch
 	my $N1=$preamble[2];
 	my $SB1Length=$preamble[3];
 	my $SB2Length=$preamble[4];
-	printf("%i %i %i %i %i %i\n",$preamble[0],$preamble[1],$N1,$SB1Length,$SB2Length,$N1*$SB1Length+12);
 	my $n2cnt=0;
 	for ($n=0;$n<$N1;$n++){
 		@b1 = unpack("C4IiScCSCC",(substr $d, 12+$n*$SB1Length+$n2cnt*$SB2Length,$SB1Length));
@@ -139,6 +132,7 @@ sub ParseMeasEpoch
 	}
 }
 
+#----------------------------------------------------------------------------
 sub SVIDtoGNSSParams{
 
 	my $svid=$_[0];
@@ -186,7 +180,6 @@ sub ParseSatVisibility
 	my @preamble = unpack("ISCC",$d);
 	my $N=$preamble[2];
 	my $BLength=$preamble[3];
-	printf("%i %i %i %i\n",$preamble[0],$preamble[1],$N,$BLength);
 	for ($m=0;$m<$N;$m++){
 		@b1=unpack("C2Ss",(substr $d,8+$m*$BLength,$BLength));
 		$svid = $b1[0];
@@ -201,7 +194,6 @@ sub ParseSatVisibility
 		if ($constellation==-1){
 			next;
 		}
-		
 		if (defined $GNSS{$svid}){
 			$cn=$GNSS{$svid}[4];
 			$GNSS{$svid}=[($constellation,$prn,$az,$el,$cn)];
@@ -209,22 +201,34 @@ sub ParseSatVisibility
 		else{
 			$GNSS{$svid}=[($constellation,$prn,$az,$el,undef)];
 		}
-		
 	}
 }
 
 #-----------------------------------------------------------------------------
-sub SendData
+sub BroadcastData
 {
+	my $bd="";
 	foreach my $key (keys %GNSS){
 		if (defined($GNSS{$key}[2]) && defined($GNSS{$key}[4])){
-			print "$GNSS{$key}[0] $GNSS{$key}[1] $GNSS{$key}[2] $GNSS{$key}[3] $GNSS{$key}[4]\n";
-		}
-		else{
-			if (!defined($GNSS{$key}[2])) {print "az/el missing\n";};
-			if (!defined($GNSS{$key}[4])) {print "c/n missing\n";};
+			my $t = time();
+			$bd .= "$t,$GNSS{$key}[0],$GNSS{$key}[1],$GNSS{$key}[2],$GNSS{$key}[3],$GNSS{$key}[4]\n";
 		}
 	}
+	print "Sending ",length($bd), " bytes\n";
+	$sock->send($bd) || print "Couldn't send\n";
 	%GNSS=();
 }
+
+
+# sub BroadcastData()
+# {
+# 	my $i;
+# 	my $data="";
+# 	for ($i=0;$i<=$#birds;$i++)
+# 	{
+# 		$data .= sprintf("$birds[$i][0],$birds[$i][1],$birds[$i][2],%d,%d,%d\n",$birds[$i][3]*10,$birds[$i][4]*10,$birds[$i][5]);
+# 	}
+# 	$sock->send($data) || print "Couldn't send\n";
+# 	
+# }
 
