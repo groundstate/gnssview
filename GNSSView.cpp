@@ -475,7 +475,7 @@ void GNSSView::readPendingDatagrams()
 							}
 						}
 						if (idx >= 0){
-							birds.at(idx)->update(az,elev,sn,u);
+							birds.at(idx)->update(az,elev,sn,u,0.5);
 						}
 						else {// new bird
 						

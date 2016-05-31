@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
+#include <cmath>
 #include <QDebug>
 
 #include "GNSSSV.h"
@@ -48,14 +48,15 @@ GNSSSV::GNSSSV(GNSSSV & gnsssv)
 
 GNSSSV::~GNSSSV(){}
 
-void GNSSSV::update(double a,double e,double s,QDateTime &u)
+void GNSSSV::update(double a,double e,double s,QDateTime &u,double threshold)
 {
 	// if this precedes the last update, just ignore it
 	if (u<lastUpdate) return;
 	lastUpdate=u;
 	// if the position is unchanged ignore it
+	
 	if (!az.isEmpty()){
-		if (az.last()==a && elev.last()==e) return;
+		if ((fabs(az.last()-a)<= threshold) && (fabs(elev.last()-e)<=threshold)) return;
 		// a further refinement - drop points where we are moving in a straight line
 		// this also cleans up the jaggies a bit 
 // 		if ((az.size() > 1) && (az.last()==a || elev.last()==e)) // don't drop the first point otherwise we don't start a track until something changes

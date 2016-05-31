@@ -3,7 +3,7 @@
 	<!-- A comma-separated list of the constellations to be tracked -->
 	<!-- Beidou,GPS,GLONASS,Galileo,QZSS,SBAS -->
 	<!-- The signal bars for each constellation will be drawn in the order in this list -->
-	<constellations>GPS,GLONASS,Beidou</constellations>
+	<constellations>GPS,GLONASS,Beidou,Galileo,QZSS,SBAS</constellations>
 	
 	<receiver>Septentrio PolaRx4</receiver>
 	
@@ -25,7 +25,7 @@
 	<images>
 		<!-- image file to use for the foreground -->
 		<foreground>
-			<file>foreground.tif</file>
+			<file>foreground.png</file>
 			<!-- minelevation is the bottom of the screen/image -->
 			<minelevation>-10</minelevation>
 			<!-- and maxelevation is the top of the image -->
@@ -52,13 +52,13 @@
 	
 	<power>
 		<!-- Conserve power by switching off at specified times  (yes/no) -->
-		<conserve>no</conserve>
+		<conserve>yes</conserve>
 		<!-- Turn off completely on the weekend (yes/no) -->
 		<weekends>yes</weekends>
 		<!-- power on time, specified in the format HH:MM:SS (24 hour clock, leading zeroes required)-->
-		<on>07:30:00</on>
+		<on>19:00:00</on>
 		<!-- power off time, specified in the format HH:MM:SS (24 hour clock, leading zeroes required)-->
-		<off>17:30:00</off>
+		<off>20:22:00</off>
 		<!-- number of minutes that a keypress or mouse event etc will override power saving -->
 		<overridetime>60</overridetime>
 	</power>

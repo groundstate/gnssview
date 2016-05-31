@@ -66,12 +66,12 @@ ConstellationProperties::ConstellationProperties(int c)
 			label="Beidou";
 			break;
 		case GNSSSV::GPS:
-			maxsv=12;
+			maxsv=14;
 			histColour[0]=1;histColour[1]=0.549;histColour[2]=0.0;histColour[3]=0.5;
 			label="GPS";
 			break;
 		case GNSSSV::Galileo:
-			maxsv=6;
+			maxsv=8;
 			histColour[0]=0.5;histColour[1]=1.0;histColour[2]=0.0;histColour[3]=0.5;
 			label="Galileo";
 			break;
@@ -86,7 +86,7 @@ ConstellationProperties::ConstellationProperties(int c)
 			label="QZSS";
 			break;
 		case GNSSSV::SBAS:
-			maxsv=4;
+			maxsv=6;
 			histColour[0]=0.98;histColour[1]=0.941;histColour[2]=0.901;histColour[3]=0.5; 
 			label="SBAS";
 			break;

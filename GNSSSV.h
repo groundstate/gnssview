@@ -41,7 +41,7 @@ class GNSSSV
 		GNSSSV(int,double,double,double,int,QDateTime &);
 		GNSSSV(GNSSSV &);
 
-		void update(double,double,double,QDateTime &);
+		void update(double,double,double,QDateTime &,double threshold=0.0);
 		
 		~GNSSSV();
 
