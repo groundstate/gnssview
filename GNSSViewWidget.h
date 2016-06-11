@@ -50,6 +50,9 @@ class ConstellationProperties{
 		GLfloat histColour[4];
 		QString label;
 		GLText *GLlabel;
+		int svIDmin,svIDmax;
+		QString idLabel;
+		QList<GLText *> svLabels;
 };
 
 class GNSSViewWidget: public QGLWidget
@@ -146,7 +149,6 @@ class GNSSViewWidget: public QGLWidget
 		QList<GNSSSV *> *birds;
 		QList<ConstellationProperties *> constellations;
 		
-		QList<GLText *> usiLabel;
 		QList<GLText *> compassLabels;
 		
 		// debugging stuff

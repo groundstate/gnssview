@@ -64,31 +64,49 @@ ConstellationProperties::ConstellationProperties(int c)
 			maxsv=12;
 			histColour[0]=1;histColour[1]=0.753;histColour[2]=0.796;histColour[3]=0.5;
 			label="Beidou";
+			idLabel="C";
+			svIDmin=1;
+			svIDmax=32;
 			break;
 		case GNSSSV::GPS:
 			maxsv=14;
 			histColour[0]=1;histColour[1]=0.549;histColour[2]=0.0;histColour[3]=0.5;
 			label="GPS";
+			idLabel="G";
+			svIDmin=1;
+			svIDmax=37;
 			break;
 		case GNSSSV::Galileo:
 			maxsv=8;
 			histColour[0]=0.5;histColour[1]=1.0;histColour[2]=0.0;histColour[3]=0.5;
 			label="Galileo";
+			idLabel="E";
+			svIDmin=1;
+			svIDmax=32;
 			break;
 		case GNSSSV::GLONASS:
 			maxsv=12;
 			histColour[0]=1;histColour[1]=0.843;histColour[2]=0.0;histColour[3]=0.5; 
 			label="GLONASS";
+			idLabel="R";
+			svIDmin=1;
+			svIDmax=25;
 			break;
 		case GNSSSV::QZSS:
 			maxsv=4;
 			histColour[0]=0.867;histColour[1]=0.627;histColour[2]=0.867;histColour[3]=0.5; 
 			label="QZSS";
+			idLabel="J";
+			svIDmin=1;
+			svIDmax=7;
 			break;
 		case GNSSSV::SBAS:
 			maxsv=6;
 			histColour[0]=0.98;histColour[1]=0.941;histColour[2]=0.901;histColour[3]=0.5; 
 			label="SBAS";
+			idLabel="S";
+			svIDmin=20;
+			svIDmax=40;
 			break;
 	}
 }
@@ -753,13 +771,15 @@ void GNSSViewWidget::drawBirds()
 		int x=(phi-phi0)/fov*(width()-1)+satWidth/2.0;
 		//if (x > width()-1 -usiLabel[birds->at(i)->PRN]->w)
 		//	x=(birds->at(i)->az[sz]-phi0)/fov*(width()-1)-satWidth/2.0-usiLabel[birds->at(i)->PRN]->w;
-		int y=(birds->at(i)->elev[sz]-minElevation)/(EL1-minElevation)*(height()-1)-usiLabel[birds->at(i)->PRN]->h/2.0;
-		if (y>height()-1 -usiLabel[birds->at(i)->PRN]->h)
-			y-=usiLabel[birds->at(i)->PRN]->h/2.0;
+		ConstellationProperties *cprop=constellations.at(birds->at(i)->constellation);
+		GLText *svLabel = cprop->svLabels.at(birds->at(i)->PRN-cprop->svIDmin);
+		int y=(birds->at(i)->elev[sz]-minElevation)/(EL1-minElevation)*(height()-1)-svLabel->h/2.0;
+		if (y>height()-1 -svLabel->h)
+			y-=svLabel->h/2.0;
 		
 		glPushMatrix();
 		glTranslatef(x,y,0);
-		usiLabel[birds->at(i)->PRN]->paint();
+		svLabel->paint();
 		glPopMatrix();
 	}
 	glDisable(GL_TEXTURE_2D);
@@ -824,9 +844,11 @@ void GNSSViewWidget::drawSignalBars()
 		
 		glEnable(GL_TEXTURE_2D);
 		glPushMatrix();
-		glTranslatef(x0+(barWidth*(width()-1)+ usiLabel[birds->at(i)->PRN]->ascent)/2.0,y0+6,0);
+		ConstellationProperties *cprop=constellations.at(birds->at(i)->constellation);
+		GLText *svLabel = cprop->svLabels.at(birds->at(i)->PRN-cprop->svIDmin);
+		glTranslatef(x0+(barWidth*(width()-1)+ svLabel->ascent)/2.0-3,y0+6,0); // fudge here
 		glRotatef(90,0,0,1);
-		usiLabel[birds->at(i)->PRN]->paint();
+		svLabel->paint();
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
 	
@@ -862,17 +884,16 @@ void GNSSViewWidget::initTextures(){
 	QFont f;
 	f.setPointSize(18);
 
-	for (int i=0;i<128;i++){
-		QString txt = QString::number(i);
-		GLText *glt = new GLText(this,txt,f);
-		usiLabel.append(glt);
-	}
-
-	f.setPointSize(24);
+	f.setPointSize(20);
 	
 	for (int c=GNSSSV::Beidou;c<=GNSSSV::SBAS;c++){
 		ConstellationProperties *cprop= constellations[c];
 		cprop->GLlabel= new GLText(this,cprop->label,f);
+		for (int i=cprop->svIDmin;i<=cprop->svIDmax;i++){
+			QString txt = cprop->idLabel+QString::number(i);
+			GLText *glt = new GLText(this,txt,f);
+			cprop->svLabels.append(glt);	
+		}
 	}	
 	
 	compassLabels.append(new GLText(this,"N",f));
