@@ -1,4 +1,5 @@
-HEADERS       = GLText.h \
+HEADERS       = ConstellationProperties.h \
+								GLText.h \
 								GNSSView.h \
 								GNSSViewWidget.h \
 								GNSSViewApp.h \
@@ -7,7 +8,8 @@ HEADERS       = GLText.h \
 								Colour.h \
 								PowerManager.h \
 								SkyModel.h
-SOURCES       = GLText.cpp \
+SOURCES       = ConstellationProperties.cpp \
+								GLText.cpp \
 								GNSSView.cpp \
 								GNSSViewWidget.cpp \
 								GNSSViewApp.cpp \

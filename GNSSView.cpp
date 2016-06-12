@@ -44,6 +44,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "ConstellationProperties.h"
 #include "GNSSView.h"
 #include "GNSSViewApp.h"
 #include "GNSSViewWidget.h"
@@ -133,6 +134,10 @@ GNSSView::GNSSView(QStringList & args)
 	longitude=151.21;
 	address="";
 	port=-1;
+	
+	for (int c = GNSSSV::Beidou;c<= GNSSSV::SBAS;c++){ // create them all so that lookups are easy
+		constellations.append(new ConstellationProperties(c));
+	}
 	
 	// Note: readConfig needs 'view'
 	QVBoxLayout * vb = new QVBoxLayout(this);
@@ -287,28 +292,28 @@ void GNSSView::readConfig(QString s)
 			QStringList sl=lc.split(",");
 			for (int i=0;i<sl.length();i++){
 				if (sl.at(i)=="beidou"){
-					view->addConstellation(GNSSSV::Beidou);
-					constellations.push_back(GNSSSV::Beidou);
+					constellations.at(GNSSSV::Beidou)->active=true;
+					view->setConstellationActive(GNSSSV::Beidou);
 				}
 				else if (sl.at(i)=="gps"){
-					view->addConstellation(GNSSSV::GPS);
-					constellations.push_back(GNSSSV::GPS);
+					constellations.at(GNSSSV::GPS)->active=true;
+					view->setConstellationActive(GNSSSV::GPS);
 				}
 				else if (sl.at(i)=="glonass"){
-					view->addConstellation(GNSSSV::GLONASS);
-					constellations.push_back(GNSSSV::GLONASS);
+					constellations.at(GNSSSV::GLONASS)->active=true;
+					view->setConstellationActive(GNSSSV::GLONASS);
 				}
 				else if (sl.at(i)=="galileo"){
-					view->addConstellation(GNSSSV::Galileo);
-					constellations.push_back(GNSSSV::Galileo);
+					constellations.at(GNSSSV::Galileo)->active=true;
+					view->setConstellationActive(GNSSSV::Galileo);
 				}
 				else if (sl.at(i)=="qzss"){
-					view->addConstellation(GNSSSV::QZSS);
-					constellations.push_back(GNSSSV::QZSS);
+					constellations.at(GNSSSV::QZSS)->active=true;
+					view->setConstellationActive(GNSSSV::QZSS);
 				}
 				else if (sl.at(i)=="sbas"){
-					view->addConstellation(GNSSSV::SBAS);
-					constellations.push_back(GNSSSV::SBAS);
+					constellations.at(GNSSSV::SBAS)->active=true;
+					view->setConstellationActive(GNSSSV::SBAS);
 				}
 			}
 		}
@@ -446,22 +451,13 @@ void GNSSView::readPendingDatagrams()
 		 QStringList svd = str.split("\n");
 		 for (int i=0;i<svd.size();i++){
 			 QStringList sv = svd.at(i).split(",");
-			 if (sv.size() == 6)
-			 {
-				 // FIXME do some sanity checks on values
+			 if (sv.size() == 6){
 				 int c   = sv.at(1).toInt();
-				 // ignore it if it's not a constellation were tracking
-				 int k;
-				 for (k=0;k<constellations.size();k++){
-						if (c==constellations.at(k))
-							break;
-				 }
-				 if (k<constellations.size()){
+				 if (c<GNSSSV::Beidou || c > GNSSSV::SBAS) continue; // ignore - bad constellation identifier
+	
+				 if (constellations.at(c)->active){
 						int prn = sv.at(2).toInt();
 						double az=sv.at(3).toDouble();
-						//if (az > 180) az -= 360;
-						//az /= 360.0;
-						//double elev=sin(sv.at(4).toDouble()/10.0*M_PI/180.0); // precompute for plotting 
 						double elev=sv.at(4).toDouble();
 						double sn = sv.at(5).toDouble()/snMax; // prescale
 						QDateTime u;
@@ -475,12 +471,13 @@ void GNSSView::readPendingDatagrams()
 							}
 						}
 						if (idx >= 0){
-							birds.at(idx)->update(az,elev,sn,u,0.5);
+							birds.at(idx)->update(az,elev,sn,u,0.5); // FIXME hardcoded parameter
 						}
 						else {// new bird
-						
-						//prn,double a,double e,double s,int c,QDateTime &u)
-							birds.append(new GNSSSV(prn,az,elev ,sn,c,u));
+							// that the PRN is sane before adding it
+							ConstellationProperties *cprop = constellations.at(c); // already checked this is OK
+							if (prn >= cprop->svIDmin && prn<=cprop->svIDmax)
+								birds.append(new GNSSSV(prn,az,elev,sn,c,u));
 						}
 				 }
 			 } // otherwise ignore it

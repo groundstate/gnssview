@@ -31,6 +31,7 @@
 #include <QGLWidget>
 #include <QString>
 
+class ConstellationProperties;
 class Colour;
 class Sun;
 class SkyModel;
@@ -38,22 +39,6 @@ class GLText;
 class GNSSSV;
 
 class QTimer;
-
-class ConstellationProperties{
-	public:
-		ConstellationProperties(int);
-		int id;
-		int svcnt;
-		int maxsv;
-		double x0;
-		bool active;
-		GLfloat histColour[4];
-		QString label;
-		GLText *GLlabel;
-		int svIDmin,svIDmax;
-		QString idLabel;
-		QList<GLText *> svLabels;
-};
 
 class GNSSViewWidget: public QGLWidget
 {
@@ -69,7 +54,7 @@ class GNSSViewWidget: public QGLWidget
 		void setLocation(double,double);
 		void setReceiver(QString);
 		void setAnimation(int,double,int,bool);
-		void addConstellation(int);
+		void setConstellationActive(int);
 		
 	public slots:
 		

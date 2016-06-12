@@ -38,6 +38,7 @@ class QLabel;
 class QTimer;
 class QUdpSocket;
 
+class ConstellationProperties;
 class GNSSViewWidget;
 class PowerManager;
 
@@ -48,7 +49,7 @@ class GNSSView : public QWidget
 	public:
 
 		GNSSView(QStringList &);
-
+		
 	protected slots:
 
 		virtual void 	keyPressEvent (QKeyEvent *);
@@ -96,7 +97,7 @@ class GNSSView : public QWidget
 		double snMax;
 		
 		QList<GNSSSV *> birds;
-		QList<int> constellations;
+		QList<ConstellationProperties *> constellations;
 };
 
 #endif

@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c)  2014  Michael J. Wouters
+// Copyright (c)  2014-2016  Michael J. Wouters
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,36 +23,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#ifndef __CONSTELLATION_PROPERTIES_H_
+#define __CONSTELLATION_PROPERTIES_H_
 
-#ifndef __GNSS_SV_H_
-#define __GNSS_SV_H_
+#include <QGLWidget>
+#include <QString>
 
-#include <QDateTime>
+class GLText;
 
-#include <QList>
-
-class GNSSSV
-{
+class ConstellationProperties{
 	public:
-
-		enum Constellation {Beidou=0,GPS=1,Galileo=2,GLONASS=3,QZSS=4,SBAS=5};
-
-		GNSSSV();
-		GNSSSV(int,double,double,double,int,QDateTime &);
-		GNSSSV(GNSSSV &);
-
-		void update(double,double,double,QDateTime &,double threshold=0.0);
-		
-		~GNSSSV();
-
-		QDateTime lastUpdate;
-		bool changed;
-		
-		int PRN;
-		QList<double> az,elev;
-		double sn;
-		int constellation;
-
+		ConstellationProperties(int);
+		int id;
+		int svcnt;
+		int maxsv;
+		double x0;
+		bool active;
+		GLfloat histColour[4];
+		QString label;
+		GLText *GLlabel;
+		int svIDmin,svIDmax;
+		QString idLabel;
+		QList<GLText *> svLabels;
 };
 
 #endif

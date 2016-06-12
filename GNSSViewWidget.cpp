@@ -33,6 +33,7 @@
 #include <QTimer>
 #include <QtXml>
 
+#include "ConstellationProperties.h"
 #include "GLText.h"
 #include "GNSSSV.h"
 #include "GNSSViewApp.h"
@@ -52,64 +53,6 @@
 #define EL1  90
 
 #define HORIZON_OFFSET 0.1
-
-ConstellationProperties::ConstellationProperties(int c)
-{
-	id=c;
-	svcnt=0;
-	x0=0;
-	active=false;
-	switch(id){
-		case GNSSSV::Beidou:
-			maxsv=12;
-			histColour[0]=1;histColour[1]=0.753;histColour[2]=0.796;histColour[3]=0.5;
-			label="Beidou";
-			idLabel="C";
-			svIDmin=1;
-			svIDmax=32;
-			break;
-		case GNSSSV::GPS:
-			maxsv=14;
-			histColour[0]=1;histColour[1]=0.549;histColour[2]=0.0;histColour[3]=0.5;
-			label="GPS";
-			idLabel="G";
-			svIDmin=1;
-			svIDmax=37;
-			break;
-		case GNSSSV::Galileo:
-			maxsv=8;
-			histColour[0]=0.5;histColour[1]=1.0;histColour[2]=0.0;histColour[3]=0.5;
-			label="Galileo";
-			idLabel="E";
-			svIDmin=1;
-			svIDmax=32;
-			break;
-		case GNSSSV::GLONASS:
-			maxsv=12;
-			histColour[0]=1;histColour[1]=0.843;histColour[2]=0.0;histColour[3]=0.5; 
-			label="GLONASS";
-			idLabel="R";
-			svIDmin=1;
-			svIDmax=25;
-			break;
-		case GNSSSV::QZSS:
-			maxsv=4;
-			histColour[0]=0.867;histColour[1]=0.627;histColour[2]=0.867;histColour[3]=0.5; 
-			label="QZSS";
-			idLabel="J";
-			svIDmin=1;
-			svIDmax=7;
-			break;
-		case GNSSSV::SBAS:
-			maxsv=6;
-			histColour[0]=0.98;histColour[1]=0.941;histColour[2]=0.901;histColour[3]=0.5; 
-			label="SBAS";
-			idLabel="S";
-			svIDmin=20;
-			svIDmax=40;
-			break;
-	}
-}
 
 GNSSViewWidget::GNSSViewWidget(QWidget *parent,QList<GNSSSV *> *b):QGLWidget(parent)
 {
@@ -135,11 +78,6 @@ GNSSViewWidget::GNSSViewWidget(QWidget *parent,QList<GNSSSV *> *b):QGLWidget(par
 	
 	receiverLabel=NULL;
 	
-	for (int i=GNSSSV::Beidou;i<=GNSSSV::SBAS;i++){
-		ConstellationProperties *cprop= new ConstellationProperties(i);
-		constellations.push_back(cprop);
-	}
-	
 	naz=90;
 	nel=90;
 	skyColour = new Colour*[(nel+1)*(naz+1)];
@@ -158,6 +96,10 @@ GNSSViewWidget::GNSSViewWidget(QWidget *parent,QList<GNSSSV *> *b):QGLWidget(par
 	dphi=360.0/(fps*trot);
 	phi0=0.0;
 	phi1=fov;
+	
+	for (int c = GNSSSV::Beidou;c<= GNSSSV::SBAS;c++){ // create them all so that lookups are easy
+		constellations.append(new ConstellationProperties(c));
+	}
 	
 	animationTimer=new QTimer(this);
 	connect(animationTimer,SIGNAL(timeout()),this,SLOT(animate()));
@@ -204,11 +146,10 @@ void GNSSViewWidget::setAnimation(int framesPerSecond,double rotationalPeriod,in
 	smooth=smoothTracks;
 }
 
-void  GNSSViewWidget::addConstellation(int c)
-{
-	constellations[c]->active=true;
-	qDebug() << "added constellation " << c;
+void GNSSViewWidget::setConstellationActive(int c){
+	constellations.at(c)->active=true;
 }
+
 //
 //
 //
