@@ -64,7 +64,7 @@ ConstellationProperties::ConstellationProperties(int c)
 			label="GLONASS";
 			idLabel="R";
 			svIDmin=1;
-			svIDmax=25;
+			svIDmax=24;
 			break;
 		case GNSSSV::QZSS:
 			maxsv=4;

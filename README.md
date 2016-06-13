@@ -25,8 +25,15 @@ where the constellation identifiers are:
 	4 QZSS
 	5 SBAS
 
-Azimuth and elevation must be in decimal degrees. The signal level can be whatever the receiver reports: it is scaled via an entry in the configuration file. The satellite identifier needs to be a unique number for each satellite.
+Azimuth and elevation must be in decimal degrees. The signal level can be whatever the receiver reports: it is scaled via an entry in the configuration file. The satellite identifier is specified according to the following scheme:
 
+	Beidou   1-32
+	GPS      1-37
+	Galileo  1-32
+	GLONASS  1-24 
+	QZSS     1-7
+	SBAS     20-40
+	
 Power management
 ----------------
 
