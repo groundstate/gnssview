@@ -32,6 +32,7 @@
 #include <QtNetwork>
 #include <QtXml>
 #include <QAction>
+#include <QDebug>
 #include <QInputDialog>
 #include <QMenu>
 #include <QRegExp>
@@ -192,6 +193,7 @@ GNSSView::GNSSView(QStringList & args)
 	QDateTime now = QDateTime::currentDateTime();
 	updateTimer->start(1000-now.time().msec()); 
 	
+    qDebug() << "GNSSView " << width() << " " << height() ;
 }
 
 void 	GNSSView::keyPressEvent (QKeyEvent *ev)

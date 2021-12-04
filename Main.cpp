@@ -23,15 +23,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#include <QtDebug>
+#include <QFile>
+#include <QTextStream>
+
 #include "GNSSViewApp.h"
 #include "GNSSView.h"
 
 GNSSViewApp *app;
 
+void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
+{
+    QString txt;
+    switch (type) {
+    case QtDebugMsg:
+        txt = QString("Debug: %1").arg(msg);
+        break;
+    case QtWarningMsg:
+        txt = QString("Warning: %1").arg(msg);
+    break;
+    case QtCriticalMsg:
+        txt = QString("Critical: %1").arg(msg);
+    break;
+    case QtFatalMsg:
+        txt = QString("Fatal: %1").arg(msg);
+    break;
+    case QtInfoMsg:
+        txt = QString("Fatal: %1").arg(msg);
+    }
+    QFile outFile("/tmp/gnssview.log");
+    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream ts(&outFile);
+    ts << txt << endl;
+}
+
+
+
 int main(int argc, char **argv)
 {
  
 	GNSSViewApp a(argc, argv);
+	qInstallMessageHandler(myMessageHandler);   
 	QStringList args = a.arguments(); 
 	GNSSView disp(args);
 	disp.show();

@@ -1,11 +1,11 @@
 Installation
 ------------
 
-You will need to install Qt4 development packages.
+You will need to install Qt5 development packages.
 
 In the `gnssview` source directory:
 
-	qmake-qt4 gnssview.pro
+	qmake gnssview.pro
 	make
 
 Communicating with a GNSS receiver

@@ -105,7 +105,7 @@ GNSSViewWidget::GNSSViewWidget(QWidget *parent,QList<GNSSSV *> *b):QGLWidget(par
 	connect(animationTimer,SIGNAL(timeout()),this,SLOT(animate()));
 	QDateTime now = QDateTime::currentDateTime();
 	animationTimer->start(1000.0/fps); 
-	
+
 }
 
 GNSSViewWidget::~GNSSViewWidget()
@@ -294,14 +294,17 @@ void 	GNSSViewWidget::paintGL()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	
 	// Need to do this because we buggerize around elsewhere with the viewport
+	qDebug() << "paintGL " << width() << "," << height();
+	qDebug() << "paintGL (parent) " << parentWidget()->width() << "," << parentWidget()->height();
+	
 	glViewport(0,0,width(),height()); // set physical size
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
 	gluOrtho2D(phi0,phi1,minElevation,EL1);
 	
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 	glPushMatrix();
 	
 	CHECK_GLERROR();
@@ -321,11 +324,18 @@ void 	GNSSViewWidget::paintGL()
 
 void 	GNSSViewWidget::resizeGL( int w, int h )
 {
+	if (w < parentWidget()->width()){
+		setFixedSize(parentWidget()->width(),parentWidget()->height());
+	}
+	
 	glViewport(0,0,w,h); // set physical size
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D(phi0,phi1,minElevation,EL1);
 	initLayout();
+    
+	qDebug() << "resizeGL " << w << "," << h;
+	qDebug() << "resizeGL (parent) " << parentWidget()->width() << "," << parentWidget()->height();
 }
 
 //
